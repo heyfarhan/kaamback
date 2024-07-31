@@ -1,21 +1,38 @@
-const signup = (req, res) => {
+const mongoose = require('mongoose')
+const UnverifiedUser = require('../models/unverifieduser.model')
+
+
+const signup = async (req, res) => {
 
     const { email, password } = req.body
 
-    if (!email || !password) {
+    //TO BE CHANGED TO USER
+    const user = await UnverifiedUser.findOne({ email })
 
-        res.status(400).json({
-            success: false,
+    try {
+
+        if (user) {
+            throw Error("User Already Exist")
+        }
+
+        const unverifieduser = await UnverifiedUser.create({
+            email,
+            password
         })
 
-        return
+        res.json({
+            success: true,
+            user: { _id: unverifieduser._id, email: unverifieduser.email }
+        })
+
+    } catch (err) {
+
+        res.json({
+            success: false,
+            error: err.message
+        })
 
     }
-
-    res.json({
-        success: true,
-        email
-    })
 
 }
 
