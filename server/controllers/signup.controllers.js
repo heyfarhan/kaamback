@@ -4,20 +4,24 @@ const UnverifiedUser = require('../models/unverifieduser.model')
 
 const signup = async (req, res) => {
 
-    const { email, password } = req.body
+    const { name, email, password, dateOfBirth } = req.body
+
 
     //TO BE CHANGED TO USER
 
     try {
         const user = await UnverifiedUser.findOne({ email })
-
         if (user) {
             throw Error("User Already Exist")
         }
 
+        const [year, month, day] = dateOfBirth.split('-');
+
         const unverifieduser = await UnverifiedUser.create({
+            name,
             email,
-            password
+            password,
+            dateOfBirth: new Date(Date.UTC(year, month - 1, day))
         })
 
         res.json({
