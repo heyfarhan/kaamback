@@ -7,9 +7,9 @@ const signup = async (req, res) => {
     const { email, password } = req.body
 
     //TO BE CHANGED TO USER
-    const user = await UnverifiedUser.findOne({ email })
 
     try {
+        const user = await UnverifiedUser.findOne({ email })
 
         if (user) {
             throw Error("User Already Exist")
