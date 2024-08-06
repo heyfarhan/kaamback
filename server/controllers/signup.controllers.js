@@ -4,13 +4,13 @@ const UnverifiedUser = require('../models/unverifieduser.model')
 
 const signup = async (req, res) => {
 
-    const { name, email, password, dateOfBirth } = req.body
-
-
-    //TO BE CHANGED TO USER
-
     try {
+
+        const { name, email, password, dateOfBirth } = req.body
+
+        //TO BE CHANGED TO USER
         const user = await UnverifiedUser.findOne({ email })
+
         if (user) {
             throw Error("User Already Exist")
         }
@@ -40,6 +40,24 @@ const signup = async (req, res) => {
 
 }
 
+const verifyOtp = async (req, res) => {
+
+    try {
+        const { email, otp } = req.body;
+
+        console.log(email, otp)
+
+        res.json({ success: "true" })
+
+    }
+    catch (err) {
+
+        res.json({ success: "false", msg: err })
+    }
+
+}
+
 module.exports = {
-    signup
+    signup,
+    verifyOtp
 }
