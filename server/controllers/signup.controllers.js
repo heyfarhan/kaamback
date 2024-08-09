@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const UnverifiedUser = require('../models/unverifieduser.model')
-
+const validateOtp = require('../utils/validateOtp')
 
 const signup = async (req, res) => {
 
@@ -45,14 +45,27 @@ const verifyOtp = async (req, res) => {
     try {
         const { email, otp } = req.body;
 
+        if (!email || !otp) {
+            throw Error("Invalid Request")
+            return
+        }
+
+        const user = await UnverifiedUser.findOne({ email });
+
+        if (!user) {
+            throw Error("Invalid Email")
+            return
+        }
+
+        const valid = await validateOtp(otp, user);
+
         console.log(email, otp)
 
         res.json({ success: "true" })
 
     }
     catch (err) {
-
-        res.json({ success: "false", msg: err })
+        res.json({ success: "false", msg: err.message })
     }
 
 }
