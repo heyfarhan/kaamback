@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const UnverifiedUser = require('../models/unverifieduser.model')
+const User = require('../models/user.model')
 const validateOtp = require('../utils/validateOtp')
 
 const signup = async (req, res) => {
@@ -8,8 +9,7 @@ const signup = async (req, res) => {
 
         const { name, email, password, dateOfBirth } = req.body
 
-        //TO BE CHANGED TO USER
-        const user = await UnverifiedUser.findOne({ email })
+        const user = await User.findOne({ email })
 
         if (user) {
             throw Error("User Already Exist")
@@ -57,11 +57,29 @@ const verifyOtp = async (req, res) => {
             return
         }
 
-        const valid = await validateOtp(otp, user);
+        const isValid = await validateOtp(otp, user);
 
-        console.log(email, otp)
+        if (isValid) {
+            await UnverifiedUser.deleteOne({ email })
+            const newUser = await User.create({
+                name: user.name,
+                email: user.email,
+                password: user.password,
+                dateOfBirth: user.dateOfBirth
+            })
 
-        res.json({ success: "true" })
+            res.json(
+                {
+                    success: isValid,
+                    token: "123",
+                    user: { name: newUser.name, email: newUser.email, dateOfBirth: newUser.dateOfBirth }
+                })
+
+        }
+        else {
+            throw Error("Invalid Otp")
+            return
+        }
 
     }
     catch (err) {

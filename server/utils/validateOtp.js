@@ -1,4 +1,4 @@
-const bycrypt = require("bcrypt")
+const bcrypt = require("bcrypt")
 
 const validateOtp = async (otp, user) => {
 
@@ -16,6 +16,9 @@ const validateOtp = async (otp, user) => {
         return
     }
 
+    const isCorrect = await bcrypt.compare(otp, user.otp)
+
+    return isCorrect
 }
 
 module.exports = validateOtp
