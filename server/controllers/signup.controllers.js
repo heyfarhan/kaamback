@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
 const UnverifiedUser = require('../models/unverifieduser.model')
 const User = require('../models/user.model')
 const validateOtp = require('../utils/validateOtp')
@@ -68,11 +69,16 @@ const verifyOtp = async (req, res) => {
                 dateOfBirth: user.dateOfBirth
             })
 
+            const token = jwt.sign(
+                { id: newUser._id },
+                process.env.JWT_SECRET,
+                { expiresIn: '1h' });
+
             res.json(
                 {
                     success: isValid,
-                    token: "123",
-                    user: { name: newUser.name, email: newUser.email, dateOfBirth: newUser.dateOfBirth }
+                    token,
+                    user: { _id: newUser._id, name: newUser.name, email: newUser.email, dateOfBirth: newUser.dateOfBirth }
                 })
 
         }
@@ -83,7 +89,7 @@ const verifyOtp = async (req, res) => {
 
     }
     catch (err) {
-        res.json({ success: "false", msg: err.message })
+        res.json({ success: "true", msg: err.message })
     }
 
 }

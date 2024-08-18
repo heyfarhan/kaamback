@@ -34,7 +34,7 @@ const unverifieduserSchema = new mongoose.Schema({
     iat: {
         type: Date,
         default: Date.now,
-        expires: 1 * 60
+        expires: '24h'
     },
 
     dateOfBirth: {
