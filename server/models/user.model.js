@@ -26,6 +26,11 @@ const userSchema = new mongoose.Schema({
     dateOfBirth: {
         type: Date,
         required: true,
+    },
+    role: {
+        type: String,
+        enum: ['jobSeeker', 'company'],
+        default: 'jobSeeker'
     }
 
 })

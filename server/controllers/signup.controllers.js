@@ -25,15 +25,16 @@ const signup = async (req, res) => {
             dateOfBirth: new Date(Date.UTC(year, month - 1, day))
         })
 
-        res.json({
+        res.status(202).json({
             success: true,
             user: { _id: unverifieduser._id, email: unverifieduser.email }
         })
 
     } catch (err) {
 
-        res.json({
+        res.status(400).json({
             success: false,
+            user: null,
             error: err.message
         })
 
@@ -74,10 +75,16 @@ const verifyOtp = async (req, res) => {
                 process.env.JWT_SECRET,
                 { expiresIn: '1h' });
 
-            res.json(
+            res.cookie('token', token, {
+                httpOnly: true,
+                // secure: true,
+                domian: '.kaamback.com',
+                maxAge: 60 * 60 * 1000,
+            })
+
+            res.status(201).json(
                 {
                     success: isValid,
-                    token,
                     user: { _id: newUser._id, name: newUser.name, email: newUser.email, dateOfBirth: newUser.dateOfBirth }
                 })
 
@@ -89,7 +96,7 @@ const verifyOtp = async (req, res) => {
 
     }
     catch (err) {
-        res.json({ success: "true", msg: err.message })
+        res.status(400).json({ success: "false", user: null, msg: err.message })
     }
 
 }
