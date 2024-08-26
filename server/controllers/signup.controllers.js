@@ -8,21 +8,22 @@ const signup = async (req, res) => {
 
     try {
 
-        const { name, email, password, dateOfBirth } = req.body
+        const { name, email, password, dateOfBirth, role } = req.body
 
-        const user = await User.findOne({ email })
+        let user = await User.findOne({ email })
 
         if (user) {
             throw Error("User Already Exist")
         }
 
-        const [year, month, day] = dateOfBirth.split('-');
+        await UnverifiedUser.findOneAndDelete({ email })
 
         const unverifieduser = await UnverifiedUser.create({
             name,
             email,
             password,
-            dateOfBirth: new Date(Date.UTC(year, month - 1, day))
+            dateOfBirth: new Date(dateOfBirth),
+            role
         })
 
         res.status(202).json({
@@ -67,7 +68,8 @@ const verifyOtp = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 password: user.password,
-                dateOfBirth: user.dateOfBirth
+                dateOfBirth: user.dateOfBirth,
+                role: user.role
             })
 
             const token = jwt.sign(

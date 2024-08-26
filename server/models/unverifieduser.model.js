@@ -40,6 +40,11 @@ const unverifieduserSchema = new mongoose.Schema({
     dateOfBirth: {
         type: Date,
         required: true,
+    },
+    role: {
+        type: String,
+        enum: ['jobSeeker', 'company', 'ADMIN'],
+        default: 'jobSeeker'
     }
 
 })
