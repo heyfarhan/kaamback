@@ -62,39 +62,37 @@ const verifyOtp = async (req, res) => {
 
         const isValid = await validateOtp(otp, user);
 
-        if (isValid) {
-            await UnverifiedUser.deleteOne({ email })
-            const newUser = await User.create({
-                name: user.name,
-                email: user.email,
-                password: user.password,
-                dateOfBirth: user.dateOfBirth,
-                role: user.role
-            })
-
-            const token = jwt.sign(
-                { id: newUser._id },
-                process.env.JWT_SECRET,
-                { expiresIn: '1h' });
-
-            res.cookie('token', token, {
-                httpOnly: true,
-                // secure: true,
-                domian: '.kaamback.com',
-                maxAge: 60 * 60 * 1000,
-            })
-
-            res.status(201).json(
-                {
-                    success: isValid,
-                    user: { _id: newUser._id, name: newUser.name, email: newUser.email, dateOfBirth: newUser.dateOfBirth }
-                })
-
-        }
-        else {
+        if (!isValid)
             throw Error("Invalid Otp")
-            return
-        }
+
+        await UnverifiedUser.deleteOne({ email })
+        const newUser = await User.create({
+            name: user.name,
+            email: user.email,
+            password: user.password,
+            dateOfBirth: user.dateOfBirth,
+            role: user.role
+        })
+
+        const token = jwt.sign(
+            { id: newUser._id },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' });
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            // secure: true,
+            domian: '.kaamback.com',
+            maxAge: 60 * 60 * 1000,
+        })
+
+        res.status(201).json(
+            {
+                success: isValid,
+                user: { _id: newUser._id, name: newUser.name, email: newUser.email, dateOfBirth: newUser.dateOfBirth, role: newUser.role }
+            })
+
+
 
     }
     catch (err) {
