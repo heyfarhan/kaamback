@@ -1,13 +1,11 @@
-const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
-const UnverifiedUser = require('../models/unverifieduser.model')
-const User = require('../models/user.model')
-const validateOtp = require('../utils/validateOtp')
+const UnverifiedUser = require('@/models/unverifieduser.model')
+const User = require('@/models/user.model')
+const validateOtp = require('@/utils/validateOtp')
 
-const signup = async (req, res) => {
-
+exports.signup = async (req, res) => {
+    // console.log(req.body);
     try {
-
         const { name, email, password, dateOfBirth, role } = req.body
 
         let user = await User.findOne({ email })
@@ -43,21 +41,21 @@ const signup = async (req, res) => {
 
 }
 
-const verifyOtp = async (req, res) => {
+exports.verifyOtp = async (req, res) => {
 
     try {
         const { email, otp } = req.body;
 
         if (!email || !otp) {
             throw Error("Invalid Request")
-            return
+            
         }
 
         const user = await UnverifiedUser.findOne({ email });
 
         if (!user) {
             throw Error("Invalid Email")
-            return
+            
         }
 
         const isValid = await validateOtp(otp, user);
@@ -92,16 +90,9 @@ const verifyOtp = async (req, res) => {
                 user: { _id: newUser._id, name: newUser.name, email: newUser.email, dateOfBirth: newUser.dateOfBirth, role: newUser.role }
             })
 
-
-
     }
     catch (err) {
         res.status(400).json({ success: "false", user: null, msg: err.message })
     }
 
-}
-
-module.exports = {
-    signup,
-    verifyOtp
 }

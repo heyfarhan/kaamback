@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
-const encrypt = require("../utils/encrypt")
-const sendOtp = require('../utils/sendOtp')
+const encrypt = require("@/utils/encrypt")
+const sendOtp = require('@/utils/sendOtp')
 
 const unverifieduserSchema = new mongoose.Schema({
 
@@ -41,6 +41,7 @@ const unverifieduserSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
+    
     role: {
         type: String,
         enum: ['jobSeeker', 'company', 'ADMIN'],
@@ -52,7 +53,7 @@ const unverifieduserSchema = new mongoose.Schema({
 unverifieduserSchema.pre('save', async function (next) {
 
     const otp = String(Math.floor(Math.random() * 9000) + 1000)
-    console.log(otp)
+    console.log("OTP",otp)
 
     this.password = await encrypt(this.password)
     this.otp = await encrypt(otp)

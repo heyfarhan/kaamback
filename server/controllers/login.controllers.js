@@ -1,30 +1,26 @@
-const User = require("../models/user.model")
+const User = require("@/models/user.model")
 
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 
-const authVerify = async (req, res) => {
-
+exports.authVerify = async (req, res) => {
     res.status(200).json({
         success: true,
         user: req.user
     })
 }
 
-const login = async (req, res) => {
+exports.login = async (req, res) => {
+    console.log("login crediantles",req.body);
     try {
-
         const { email, password } = req.body;
-
         if (!email || !password)
-            throw Error("Email & Password are Required")
-
+            throw new Error("Email & Password are Required")
 
         const user = await User.findOne({ email })
 
         if (!user)
             throw Error("No User Exists")
-
 
         const isCorrect = await bcrypt.compare(password, user.password)
 
@@ -49,14 +45,8 @@ const login = async (req, res) => {
 
         })
 
-
     } catch (err) {
         res.status(401).json({ success: false, msg: err.message })
     }
 }
 
-
-module.exports = {
-    authVerify,
-    login
-}

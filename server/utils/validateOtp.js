@@ -1,10 +1,10 @@
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcryptjs")
 
 const validateOtp = async (otp, user) => {
 
     if (!user.otp || !user.iat) {
-        throw Error("Error Occured Try Resend Otp")
-        return
+        throw new Error("Error Occured Try Resend Otp")
+        
     }
 
     const issuedAt = new Date(user.iat)
@@ -12,8 +12,8 @@ const validateOtp = async (otp, user) => {
     const expirationTime = new Date(issuedAt.getTime() + 10 * 60000);
 
     if (currentTime > expirationTime) {
-        throw Error("Otp Expired")
-        return
+        throw new Error("Otp Expired")
+        
     }
 
     const isCorrect = await bcrypt.compare(otp, user.otp)

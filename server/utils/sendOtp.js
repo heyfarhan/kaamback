@@ -3,15 +3,15 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.NODEMAILER_USER,
+        pass: process.env.NODEMAILER_PASS,
     }
 });
 
 const sendOtp = async (userEmail, otp) => {
 
     const mailOptions = {
-        from: process.env.EMAIL_USER,
+        from: process.env.NODEMAILER_USER,
         to: userEmail,
         subject: 'OTP Verification',
         html: `
