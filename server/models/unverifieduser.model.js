@@ -41,7 +41,7 @@ const unverifieduserSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
-    
+
     role: {
         type: String,
         enum: ['jobSeeker', 'company', 'ADMIN'],
@@ -53,12 +53,12 @@ const unverifieduserSchema = new mongoose.Schema({
 unverifieduserSchema.pre('save', async function (next) {
 
     const otp = String(Math.floor(Math.random() * 9000) + 1000)
-    console.log("OTP",otp)
+    console.log("OTP", otp)
 
     this.password = await encrypt(this.password)
     this.otp = await encrypt(otp)
 
-    sendOtp(this.email, otp)
+    sendOtp(this.email, otp, "verify")
 
     next()
 })

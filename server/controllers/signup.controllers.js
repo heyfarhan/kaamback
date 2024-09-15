@@ -3,7 +3,7 @@ const UnverifiedUser = require('@/models/unverifieduser.model')
 const User = require('@/models/user.model')
 const validateOtp = require('@/utils/validateOtp')
 
-exports.signup = async (req, res) => {
+const signup = async (req, res) => {
     // console.log(req.body);
     try {
         const { name, email, password, dateOfBirth, role } = req.body
@@ -30,7 +30,6 @@ exports.signup = async (req, res) => {
         })
 
     } catch (err) {
-
         res.status(400).json({
             success: false,
             user: null,
@@ -41,24 +40,24 @@ exports.signup = async (req, res) => {
 
 }
 
-exports.verifyOtp = async (req, res) => {
+const verifyOtp = async (req, res) => {
+    // console.log("body", req.body);
 
     try {
         const { email, otp } = req.body;
 
         if (!email || !otp) {
             throw Error("Invalid Request")
-            
         }
 
         const user = await UnverifiedUser.findOne({ email });
-
+        // console.log(user);
         if (!user) {
             throw Error("Invalid Email")
-            
+
         }
 
-        const isValid = await validateOtp(otp, user);
+        const isValid = await validateOtp(otp, user, "authorize");
 
         if (!isValid)
             throw Error("Invalid Otp")
@@ -71,7 +70,7 @@ exports.verifyOtp = async (req, res) => {
             dateOfBirth: user.dateOfBirth,
             role: user.role
         })
-
+        // console.log("data saved in user model", newUser);
         const token = jwt.sign(
             { id: newUser._id },
             process.env.JWT_SECRET,
@@ -80,7 +79,7 @@ exports.verifyOtp = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             // secure: true,
-            domian: '.kaamback.com',
+            domain: '.kaamback.com',
             maxAge: 60 * 60 * 1000,
         })
 
@@ -89,10 +88,12 @@ exports.verifyOtp = async (req, res) => {
                 success: isValid,
                 user: { _id: newUser._id, name: newUser.name, email: newUser.email, dateOfBirth: newUser.dateOfBirth, role: newUser.role }
             })
-
-    }
-    catch (err) {
+    } catch (err) {
         res.status(400).json({ success: "false", user: null, msg: err.message })
     }
+}
 
+module.exports = {
+    signup,
+    verifyOtp
 }
