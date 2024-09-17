@@ -131,12 +131,25 @@ exports.passwordchange = async (req, res) => {
                 message: "Invalid or expired OTP",
             });
         }
+        const token = jwt.sign(
+            { id: verifiedUser._id },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' });
 
-        // Proceed to the password change step
-        return res.status(200).json({
-            status: "true",
-            message: "OTP validated successfully. Proceed to password change.",
-        });
+        res.cookie('token', token, {
+            httpOnly: true,
+            // secure: true,
+            domain: '.kaamback.com',
+            maxAge: 60 * 60 * 1000,
+        })
+        // console.log(token);
+
+        res.status(200).json(
+            {
+                status: "true",
+                user: { _id: verifiedUser._id, name: verifiedUser.name, email: verifiedUser.email, dateOfBirth: verifiedUser.dateOfBirth, role: verifiedUser.role },
+                message: "OTP validated successfully. Proceed to password change.",
+            })
 
     } catch (error) {
         console.error("Error:", error.message);

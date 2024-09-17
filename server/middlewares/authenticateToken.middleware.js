@@ -6,7 +6,6 @@ const authenticateToken = async (req, res, next) => {
         const token = req.cookies.token
         if (!token) {
             throw Error("Cookie Token Not Present")
-            
         }
 
         const { id } = jwt.verify(token, process.env.JWT_SECRET)

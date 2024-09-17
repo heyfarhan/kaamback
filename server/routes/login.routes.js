@@ -8,6 +8,6 @@ router.get('/verify', authenticateToken, authVerify)
 router.post('/login', login)
 router.post('/forgot', forgot)
 router.post('/passwordchange', passwordchange)
-router.post('/setpassword', setnewpassword)
+router.post('/setpassword',authenticateToken, setnewpassword)
 
 module.exports = router
