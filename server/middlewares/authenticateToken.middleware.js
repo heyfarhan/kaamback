@@ -1,25 +1,19 @@
-const User = require("../models/user.model")
-
+const User = require("@/models/user.model")
 const jwt = require('jsonwebtoken')
 
 const authenticateToken = async (req, res, next) => {
-
     try {
-
         const token = req.cookies.token
-
         if (!token) {
             throw Error("Cookie Token Not Present")
-            return
         }
 
         const { id } = jwt.verify(token, process.env.JWT_SECRET)
-
         const user = await User.findOne({ _id: id })
 
         if (!user) {
             throw Error("No User With this _id Exists")
-            return
+            
         }
 
         req.user = {
@@ -39,7 +33,5 @@ const authenticateToken = async (req, res, next) => {
 
         res.status(403).json({ succcess: false, msg: err.message, user: null })
     }
-
-
 }
 module.exports = authenticateToken

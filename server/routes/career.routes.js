@@ -1,6 +1,6 @@
 const router = require('express').Router()
 
-const { createOpening, getOpenings, getOpening, deleteOpening } = require('../controllers/career.controllers')
+const { createOpening,getOpenings, getOpening, deleteOpening} = require('../controllers/career.controllers')
 const roleAccess = require('../middlewares/roleAccess.middleware')
 
 router.post('/create', roleAccess(['ADMIN']), createOpening)

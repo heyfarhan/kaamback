@@ -1,6 +1,6 @@
-const Opening = require('../models/opening.model')
+const Opening = require('@/models/opening.model')
 
-const createOpening = async (req, res) => {
+exports.createOpening = async (req, res) =>{
 
     try {
 
@@ -25,7 +25,7 @@ const createOpening = async (req, res) => {
 
     }
 }
-const getOpenings = async (req, res) => {
+exports.getOpenings = async (req, res) => {
 
     try {
 
@@ -44,7 +44,7 @@ const getOpenings = async (req, res) => {
 
     }
 }
-const getOpening = async (req, res) => {
+exports.getOpening = async (req, res) => {
 
     try {
         const { id } = req.params;
@@ -64,7 +64,7 @@ const getOpening = async (req, res) => {
 
     }
 }
-const deleteOpening = async (req, res) => {
+exports.deleteOpening = async (req, res) => {
 
     try {
         const { id } = req.params;
@@ -83,11 +83,4 @@ const deleteOpening = async (req, res) => {
         })
 
     }
-}
-
-module.exports = {
-    createOpening,
-    getOpenings,
-    getOpening,
-    deleteOpening
 }
