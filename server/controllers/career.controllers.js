@@ -1,6 +1,7 @@
-const Opening = require('../models/opening.model')
+const Opening = require('@/models/opening.model')
+const UserDetail = require('../models/userDetail.model')
 
-const createOpening = async (req, res) => {
+exports.createOpening = async (req, res) => {
 
     try {
 
@@ -25,7 +26,7 @@ const createOpening = async (req, res) => {
 
     }
 }
-const getOpenings = async (req, res) => {
+exports.getOpenings = async (req, res) => {
 
     try {
 
@@ -44,7 +45,7 @@ const getOpenings = async (req, res) => {
 
     }
 }
-const getOpening = async (req, res) => {
+exports.getOpening = async (req, res) => {
 
     try {
         const { id } = req.params;
@@ -64,7 +65,7 @@ const getOpening = async (req, res) => {
 
     }
 }
-const deleteOpening = async (req, res) => {
+exports.deleteOpening = async (req, res) => {
 
     try {
         const { id } = req.params;
@@ -85,9 +86,51 @@ const deleteOpening = async (req, res) => {
     }
 }
 
-module.exports = {
-    createOpening,
-    getOpenings,
-    getOpening,
-    deleteOpening
-}
+
+exports.userdetail = async (req, res) => {
+    // console.log("body", req.body);
+    // console.log("files", req.files);
+
+    try {
+        if (!req.body) {
+            return res.status(400).json({
+                success: false,
+                message: "Data received is not correct",
+            });
+        }
+
+        const profileImage = req.files['profile'] ? req.files['profile'][0].filename : null;
+        const resumeFile = req.files['resume'] ? req.files['resume'][0].filename : null;
+
+        const usercreate = await UserDetail.create({
+            fullName: req.body.fullName,
+            country: req.body.country,
+            city: req.body.city,
+            englishProficiency: req.body.englishProficiency,
+            professionalExperience: req.body.professionalExperience,
+            primaryJob: req.body.primaryJob,
+            primaryJobExperience: req.body.primaryJobExperience,
+            worked: req.body.worked,
+            skills: req.body.skills,
+            linkedIn: req.body.linkedIn,
+            profile: profileImage,
+            resume: resumeFile
+        });
+
+        await usercreate.save();
+
+        res.status(200).json({
+            success: true,
+            message: "User details created successfully!",
+            data: usercreate
+        });
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
