@@ -22,7 +22,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-
+    otp: {
+        type: String,
+        require: true,
+    },
+    iat: {
+        type: Date,
+        default: Date.now,
+        expires: '24h'
+    },
     dateOfBirth: {
         type: Date,
         required: true,

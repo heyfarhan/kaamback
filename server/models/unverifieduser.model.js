@@ -57,7 +57,7 @@ unverifieduserSchema.pre('save', async function (next) {
     this.password = await encrypt(this.password)
     this.otp = await encrypt(otp)
 
-    sendOtp(this.email, otp)
+    sendOtp(this.email, otp, 'signUp')
 
     next()
 })

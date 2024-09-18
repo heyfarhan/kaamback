@@ -1,5 +1,6 @@
 const express = require("express")
 const cookieParser = require("cookie-parser")
+const path = require('path')
 
 const signupRoutes = require("./routes/signup.routes")
 const loginRoutes = require("./routes/login.routes")
@@ -10,6 +11,8 @@ const app = express()
 
 app.use(express.json())
 app.use(cookieParser())
+
+app.use(express.static(path.resolve(path.dirname(__dirname) + '/public')));
 
 app.get('/', (req, res) => {
 
