@@ -13,6 +13,7 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.use(express.static(path.resolve(path.dirname(__dirname) + '/public')));
+app.use(express.static(path.resolve(path.dirname(__dirname) + '/Kaamback-frontend/client/dist')));
 
 app.get('/', (req, res) => {
 
