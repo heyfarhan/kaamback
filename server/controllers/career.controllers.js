@@ -1,5 +1,6 @@
-const Opening = require('@/models/opening.model')
+const Opening = require('../models/opening.model')
 const UserDetail = require('../models/userDetail.model')
+const CarrerApplication = require('../models/carrerapplication.model');
 
 exports.createOpening = async (req, res) => {
 
@@ -26,6 +27,7 @@ exports.createOpening = async (req, res) => {
 
     }
 }
+
 exports.getOpenings = async (req, res) => {
 
     try {
@@ -45,6 +47,7 @@ exports.getOpenings = async (req, res) => {
 
     }
 }
+
 exports.getOpening = async (req, res) => {
 
     try {
@@ -65,6 +68,7 @@ exports.getOpening = async (req, res) => {
 
     }
 }
+
 exports.deleteOpening = async (req, res) => {
 
     try {
@@ -86,7 +90,6 @@ exports.deleteOpening = async (req, res) => {
     }
 }
 
-
 exports.userdetail = async (req, res) => {
     // console.log("body", req.body);
     // console.log("files", req.files);
@@ -95,7 +98,7 @@ exports.userdetail = async (req, res) => {
         if (!req.body) {
             return res.status(400).json({
                 success: false,
-                message: "Data received is not correct",
+                message: "Data not recived correctly",
             });
         }
 
@@ -134,3 +137,44 @@ exports.userdetail = async (req, res) => {
     }
 };
 
+exports.carrerapplication = async (req, res) => {
+    try {
+        if (!req.body || !req.file) {
+            return res.status(400).json({
+                status: false,
+                message: "Required data not received properly"
+            });
+        }
+
+        // console.log("Form Data:", req.body);
+        // console.log("Uploaded File:", req.file);
+
+        const { legalName, email, contactNumber, currentCity, gender, languages, workMode } = req.body;
+        const resumePath = req.file.path;
+
+        const careerRecord = new CarrerApplication({
+            legalName,
+            email,
+            contactNumber,
+            currentCity,
+            gender,
+            languages: languages,
+            workMode,
+            resume: resumePath,
+        });
+
+        await careerRecord.save();
+        // console.log(careerRecord);
+        return res.status(201).json({
+            status: true,
+            message: "Career application submitted successfully",
+            data: careerRecord
+        });
+    } catch (error) {
+        console.error("Error submitting application:", error);
+        res.status(500).json({
+            message: "Server error",
+            error: error.message
+        });
+    }
+};
