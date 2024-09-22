@@ -15,20 +15,15 @@ const authenticateToken = async (req, res, next) => {
 
         const { id } = jwt.verify(token, process.env.JWT_SECRET)
 
-        const user = await User.findOne({ _id: id })
-
-        if (!user) {
-            throw Error("No User With this _id Exists")
+        if (!id) {
+            throw Error("No User _id Exists")
             return
         }
 
         req.user = {
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            dateOfBirth: user.dateOfBirth,
-            role: user.role
+            _id: id,
         }
+
         next()
     }
     catch (err) {

@@ -52,7 +52,7 @@ const unverifieduserSchema = new mongoose.Schema({
 unverifieduserSchema.pre('save', async function (next) {
 
     const otp = String(Math.floor(Math.random() * 9000) + 1000)
-    console.log(otp)
+    // console.log(otp)
 
     this.password = await encrypt(this.password)
     this.otp = await encrypt(otp)

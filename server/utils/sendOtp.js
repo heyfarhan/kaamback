@@ -16,7 +16,7 @@ const sendOtp = async (userEmail, otp, purpose) => {
         signUp: {
             subject: 'Email Verification - KaamBack',
             html: `<div style="text-align: center;font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px;">
-                    <img src="${process.env.BASE_URL + '/cover.png'}" alt="Welcome" style="max-width: 100%; height: auto; border-radius: 10px;">
+                    <img src="https://cdn.glitch.global/400d48ec-64c7-4300-94a6-b03e831f3d48/KaamBack%20(2)-CIx_-HhR.png?v=1726765769496" alt="Welcome" style="max-width: 100%; height: auto; border-radius: 10px;">
                     <h2 style="text-align: center; color: #333;">Welcome to KaamBack!</h2>
                     <p style="font-size: 16px; color: #555;">Your OTP is</p>
                     <h1><strong>${otp}</strong></h1>
@@ -31,7 +31,7 @@ const sendOtp = async (userEmail, otp, purpose) => {
         forgot: {
             subject: 'Password Reset Request - KaamBack',
             html: ` <div style="text-align: center;font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px;">
-            <img src="${process.env.BASE_URL + '/cover.png'}" alt="Welcome" style="max-width: 100%; height: auto; border-radius: 10px;">
+            <img src="https://cdn.glitch.global/400d48ec-64c7-4300-94a6-b03e831f3d48/KaamBack%20(2)-CIx_-HhR.png?v=1726765769496" alt="Welcome" style="max-width: 100%; height: auto; border-radius: 10px;">
             <h2 style="text-align: center; color: #333;">Reset Your Password</h2>
                     <p style="font-size: 16px; color: #555;">We received a request to reset your password. Your OTP is:</p>
                     <h1><strong>${otp}</strong></h1>

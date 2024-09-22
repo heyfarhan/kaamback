@@ -1,7 +1,10 @@
 const mongoose = require('mongoose')
 
-const userDetailSchema = new mongoose.Schema({
-
+const freelancerDetailSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     fullName: {
         type: String,
         require: true,
@@ -59,4 +62,6 @@ const userDetailSchema = new mongoose.Schema({
 
 });
 
-const UserDetail = mongoose.model('UserDetails', userDetailSchema);
+const FreelancerDetail = mongoose.model('freelancerDetail', freelancerDetailSchema);
+
+module.exports = FreelancerDetail
