@@ -23,5 +23,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', signupRoutes)
 app.use('/api/auth', loginRoutes)
 app.use('/api/career', authenticateToken, carrerRoutes)
+app.use('/api/company',authenticateToken,companyRoutes)
+
 
 module.exports = app
