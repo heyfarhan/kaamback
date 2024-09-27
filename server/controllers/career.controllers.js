@@ -1,4 +1,5 @@
 const Opening = require('../models/opening.model')
+const CareerApplication = require('../models/careerApplication.model')
 
 const createOpening = async (req, res) => {
 
@@ -85,9 +86,60 @@ const deleteOpening = async (req, res) => {
     }
 }
 
+const applyForCareerJob = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // console.log("Form Data:", req.body);
+        // console.log("Uploaded File:", req.file);
+
+        if (!req.body || !req.file) {
+            return res.status(400).json({
+                status: false,
+                message: "input error"
+            });
+        }
+
+        const { legalName, email, contactNumber, currentCity, gender, languages, workMode } = req.body;
+        const resumePath = req.file.path;
+
+        const careerRecord = new CareerApplication({
+            openingId: id,
+            legalName,
+            email,
+            contactNumber,
+            currentCity,
+            gender,
+            languages: JSON.parse(req.body.languages),
+            workMode,
+            resume: resumePath,
+        });
+
+        await careerRecord.save();
+
+        // console.log(careerRecord);
+
+        return res.status(201).json({
+            status: true,
+            message: "Career application submitted successfully",
+            data: careerRecord
+        });
+
+    } catch (error) {
+
+        // console.error("Error submitting application:", error);
+
+        res.status(500).json({
+            message: "Server error",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     createOpening,
     getOpenings,
     getOpening,
-    deleteOpening
+    deleteOpening,
+    applyForCareerJob
 }
