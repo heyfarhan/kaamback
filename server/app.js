@@ -7,6 +7,8 @@ const loginRoutes = require("./routes/login.routes")
 const carrerRoutes = require("./routes/career.routes")
 const userRoutes = require("./routes/user.routes")
 const freelancerRoutes = require("./routes/freelancer.routes")
+const companyRoutes = require("./routes/company.routes")
+
 const authenticateToken = require("./middlewares/authenticateToken.middleware")
 
 const app = express()
@@ -31,5 +33,6 @@ app.use('/api/auth', loginRoutes)
 app.use('/api/career', authenticateToken, carrerRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/freelancer', authenticateToken, freelancerRoutes)
+app.use('/api/company', authenticateToken, companyRoutes)
 
 module.exports = app

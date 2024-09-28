@@ -1,4 +1,5 @@
 const FreelancerDetail = require("../models/freelancer.model");
+const User = require("../models/user.model");
 
 const setFreelancer = async (req, res) => {
 
@@ -38,6 +39,8 @@ const setFreelancer = async (req, res) => {
         });
 
         await freelancer.save();
+
+        const user = await User.findOneAndUpdate({ _id: req.user._id }, { freelancerDetail: freelancer._id });
 
         res.status(200).json({
             success: true,

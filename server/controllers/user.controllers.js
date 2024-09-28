@@ -27,6 +27,7 @@ const forgotPassword = async (req, res) => {
         }
         else {
             const otp = String(Math.floor(Math.random() * 9000) + 1000);
+            console.log(otp)
 
             const encryptedOtp = await encrypt(otp);
 
@@ -64,7 +65,7 @@ const forgotPasswordOtpVerify = async (req, res) => {
             });
         }
 
-        const verifiedUser = await User.findOne({ email });
+        const verifiedUser = await User.findOne({ email })
 
         if (!verifiedUser) {
             return res.status(404).json({
@@ -97,7 +98,12 @@ const forgotPasswordOtpVerify = async (req, res) => {
         res.status(200).json(
             {
                 status: "true",
-                user: { _id: verifiedUser._id, name: verifiedUser.name, email: verifiedUser.email, dateOfBirth: verifiedUser.dateOfBirth, role: verifiedUser.role },
+                user: {
+                    _id: verifiedUser._id, name: verifiedUser.name, email: verifiedUser.email,
+                    dateOfBirth: verifiedUser.dateOfBirth, role: verifiedUser.role,
+                    freelancerDetail: verifiedUser.freelancerDetail,
+                    companyDetail: verifiedUser.companyDetail,
+                },
                 message: "OTP validated successfully. Proceed to password change.",
             })
 

@@ -8,7 +8,7 @@ const authVerify = async (req, res) => {
 
     const { _id } = req.user;
 
-    const user = await User.findOne({ _id })
+    const user = await User.findOne({ _id }).select('-password -otp -iat');
 
     if (!user) {
         throw Error("No User With this _id Exists")
@@ -17,15 +17,7 @@ const authVerify = async (req, res) => {
 
     res.status(200).json({
         success: true,
-        user: {
-
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            dateOfBirth: user.dateOfBirth,
-            role: user.role
-
-        }
+        user
     })
 }
 
@@ -38,7 +30,7 @@ const login = async (req, res) => {
             throw Error("Email & Password are Required")
 
 
-        const user = await User.findOne({ email })
+        const user = await User.findOne({ email });
 
         if (!user)
             throw Error("No User Exists")
@@ -63,8 +55,12 @@ const login = async (req, res) => {
 
         res.status(200).json({
             success: isCorrect,
-            user: { _id: user._id, name: user.name, email: user.email, dateOfBirth: user.dateOfBirth, role: user.role }
-
+            user: {
+                _id: user._id, name: user.name, email: user.email,
+                dateOfBirth: user.dateOfBirth, role: user.role,
+                freelancerDetail: user.freelancerDetail,
+                companyDetail: user.companyDetail,
+            }
         })
 
 

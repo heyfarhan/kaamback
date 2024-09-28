@@ -71,7 +71,7 @@ const verifyOtp = async (req, res) => {
             email: user.email,
             password: user.password,
             dateOfBirth: user.dateOfBirth,
-            role: user.role
+            role: user.role,
         })
 
         const token = jwt.sign(
@@ -89,7 +89,10 @@ const verifyOtp = async (req, res) => {
         res.status(201).json(
             {
                 success: isValid,
-                user: { _id: newUser._id, name: newUser.name, email: newUser.email, dateOfBirth: newUser.dateOfBirth, role: newUser.role }
+                user: {
+                    _id: newUser._id, name: newUser.name, email: newUser.email,
+                    dateOfBirth: newUser.dateOfBirth, role: newUser.role,
+                }
             })
 
 

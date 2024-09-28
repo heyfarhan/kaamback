@@ -62,6 +62,6 @@ const freelancerDetailSchema = new mongoose.Schema({
 
 });
 
-const FreelancerDetail = mongoose.model('freelancerDetail', freelancerDetailSchema);
+const FreelancerDetail = mongoose.model('FreelancerDetail', freelancerDetailSchema);
 
 module.exports = FreelancerDetail

@@ -39,8 +39,26 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['freelancer', 'company', 'ADMIN'],
         default: 'freelancer'
+    },
+    freelancerDetail: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'FreelancerDetail'
+    },
+    companyDetail: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'CompanyDetail'
     }
 
 })
+
+userSchema.pre('find', function (next) {
+    this.populate('freelancerDetail').populate('companyDetail');
+    next();
+});
+
+userSchema.pre('findOne', function (next) {
+    this.populate('freelancerDetail').populate('companyDetail');
+    next();
+});
 
 module.exports = mongoose.model('User', userSchema)
