@@ -1,4 +1,5 @@
 const FreelancerDetail = require("../models/freelancer.model");
+const JobPost = require("../models/jobPost.model");
 const User = require("../models/user.model");
 
 const setFreelancer = async (req, res) => {
@@ -57,6 +58,44 @@ const setFreelancer = async (req, res) => {
     }
 };
 
+const jobFeed = async (req, res) => {
+
+    try {
+        const { page, limit } = req.query;
+
+        const record = await JobPost.find()
+            .skip((page - 1) * limit)
+            .limit(Number(limit));
+
+        const total = await JobPost.countDocuments();
+
+        if (record.length === 0) {
+            return res.status(404).json({
+                message: false,
+                error: "No job posts found."
+            });
+        }
+
+        res.status(200).json({
+            message: true,
+            data: record,
+            pagination: {
+                currentPage: page,
+                totalRecords: total
+            }
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: false,
+            error: "Failed to fetch job posts. Please try again later.",
+            details: error.message
+        });
+    }
+};
+
+
 module.exports = {
-    setFreelancer
+    setFreelancer,
+    jobFeed
 }

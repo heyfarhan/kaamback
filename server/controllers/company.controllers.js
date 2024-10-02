@@ -1,4 +1,5 @@
 const CompanyDetail = require('../models/company.model');
+const JobPost = require('../models/jobPost.model');
 const User = require('../models/user.model');
 
 const setCompany = async (req, res) => {
@@ -48,6 +49,63 @@ const setCompany = async (req, res) => {
     }
 };
 
+const postJob = async (req, res) => {
+
+    if (!req.body) {
+        return res.status(400).json({ message: 'Please provide all the required fields.' });
+    }
+
+    //add restriction to only job can be posted by company
+
+    try {
+
+        const {
+            jobTitle,
+            experienceYears,
+            expectedSalary,
+            duration,
+            skills,
+            jobType,
+            location,
+            department,
+            recruitmentPeriod,
+            description,
+            companyDetails
+        } = req.body;
+
+        const newJobPost = new JobPost({
+            jobTitle,
+            experienceYears,
+            expectedSalary,
+            duration,
+            skills,
+            jobType,
+            location,
+            department,
+            recruitmentPeriod,
+            description,
+            companyDetails,
+            postedBy: req.user._id
+        });
+
+        const savedJobPost = await newJobPost.save();
+
+        res.status(201).json({
+            message: 'Job posted successfully!',
+            jobPost: savedJobPost
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: 'Failed to create job post. Please try again later.',
+            error: error.message
+        });
+    }
+};
+
+
 module.exports = {
-    setCompany
+    setCompany,
+    postJob
 }
