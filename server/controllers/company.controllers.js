@@ -1,5 +1,4 @@
 const Companydetail = require('../models/companydetail.model');
-const { findByIdAndUpdate } = require('../models/freelancer.model');
 const Jobpost = require('../models/postjob.model')
 
 exports.companydetails = async (req, res) => {
@@ -30,20 +29,18 @@ exports.companydetails = async (req, res) => {
 };
 
 exports.companydetailsupdate = async (req, res) => {
-    console.log('ID:', req.params.id);
-    console.log('Request Body:', req.body);
-    console.log('Uploaded File:', req.file);
+    // console.log('ID:', req.params.id);
+    // console.log('Request Body:', req.body);
+    // console.log('Uploaded File:', req.file);
 
     try {
         const id = req.params.id;
-        
+
         if (!req.body) {
             return res.status(400).json({
                 message: "Data Not Received properly",
             });
         }
-
-      
         if (req.file) {
             req.body.logo = req.file.filename;
         }
@@ -66,8 +63,6 @@ exports.companydetailsupdate = async (req, res) => {
         });
     }
 };
-
-
 
 exports.jobpost = async (req, res) => {
     if (!req.body) {
@@ -152,5 +147,20 @@ exports.Jobfeed = async (req, res) => {
 };
 
 
-
-
+exports.postedbycompany = async (req, res) => {
+    console.log(req.params);
+    try {
+        const jobs = await Jobpost.find({ companyDetails: req.params }).populate('companyDetails', 'name address');
+        res.status(200).json({
+            success: true,
+            jobs
+        });
+    } catch (error) {
+        console.error('Error fetching jobs:', error.message);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching jobs',
+            error: error.message
+        });
+    }
+};
