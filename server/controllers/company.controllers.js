@@ -1,3 +1,4 @@
+const Application = require('../models/application.model');
 const CompanyDetail = require('../models/company.model');
 const JobPost = require('../models/jobPost.model');
 const User = require('../models/user.model');
@@ -104,8 +105,31 @@ const postJob = async (req, res) => {
     }
 };
 
+const getApplications = async (req, res) => {
+    try {
+
+        const applications = await Application.find({ companyId: req.user._id })
+            .sort({ 'updatedAt': -1 })
+            .populate('jobId')
+            .populate('userId', '_id freelancerDetail')
+            .populate('companyId', '_id companyDetail');
+
+        res.status(200).json({
+            message: 'Applications retrieved successfully',
+            applications
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error while fetching applications',
+            error: error.message
+        });
+    }
+};
+
+
 
 module.exports = {
     setCompany,
-    postJob
+    postJob,
+    getApplications
 }

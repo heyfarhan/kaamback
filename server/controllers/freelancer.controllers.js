@@ -1,6 +1,7 @@
 const FreelancerDetail = require("../models/freelancer.model");
 const JobPost = require("../models/jobPost.model");
 const User = require("../models/user.model");
+const Application = require("../models/application.model");
 
 const setFreelancer = async (req, res) => {
 
@@ -64,8 +65,10 @@ const jobFeed = async (req, res) => {
         const { page, limit } = req.query;
 
         const record = await JobPost.find()
+            .sort({ 'updatedAt': -1 })
             .skip((page - 1) * limit)
-            .limit(Number(limit));
+            .limit(Number(limit))
+            .populate('companyDetails');
 
         const total = await JobPost.countDocuments();
 
@@ -94,8 +97,71 @@ const jobFeed = async (req, res) => {
     }
 };
 
+const applyForJob = async (req, res) => {
+    try {
+        console.log('Request Body:', req.body);
+
+        const { jobId, companyId } = req.body;
+
+        const newApplication = new Application({
+            jobId,
+            companyId,
+            userId: req.user._id
+        });
+
+        await newApplication.save();
+
+        console.log('Application Saved:', newApplication);
+
+        res.status(201).json({
+            message: 'Application submitted successfully',
+            application: newApplication
+        });
+
+    } catch (error) {
+
+        console.error('Error Saving Application:', error.message);
+
+        if (error.code === 11000) {
+            res.status(400).json({
+                message: 'You have already applied to this job',
+                error: error.message
+            });
+        } else {
+            res.status(500).json({
+                message: 'Error while submitting application',
+                error: error.message
+            });
+        }
+
+    }
+};
+
+const getApplications = async (req, res) => {
+    try {
+
+        const applications = await Application.find({ userId: req.user._id })
+            .sort({ 'updatedAt': -1 })
+            .populate('jobId')
+            .populate('userId', '_id freelancerDetail')
+            .populate('companyId', '_id companyDetail');
+
+        res.status(200).json({
+            message: 'Applications retrieved successfully',
+            applications
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error while fetching applications',
+            error: error.message
+        });
+    }
+};
+
 
 module.exports = {
     setFreelancer,
-    jobFeed
+    jobFeed,
+    applyForJob,
+    getApplications
 }

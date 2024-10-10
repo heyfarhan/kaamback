@@ -29,7 +29,6 @@ const userSchema = new mongoose.Schema({
     iat: {
         type: Date,
         default: Date.now,
-        expires: '24h'
     },
     dateOfBirth: {
         type: Date,
