@@ -1,5 +1,5 @@
 const FreelancerDetail = require("../models/freelancer.model");
-const JobPost = require("../models/jobPost.model");
+const JobPost = require("../models/postjob.model");
 const User = require("../models/user.model");
 
 const setFreelancer = async (req, res) => {
@@ -8,12 +8,14 @@ const setFreelancer = async (req, res) => {
     // console.log("files", req.files);
 
     try {
+
         if (!req.body) {
             return res.status(400).json({
                 success: false,
                 message: "input error",
             });
         }
+
         const profileImage = req.files['profile'] ? req.files['profile'][0].filename : null;
         const resumeFile = req.files['resume'] ? req.files['resume'][0].filename : null;
 
@@ -59,17 +61,21 @@ const setFreelancer = async (req, res) => {
 };
 
 const jobFeed = async (req, res) => {
-
     try {
-        const { page, limit } = req.query;
+        const { page, limit, ...filters } = req.query;
 
-        const record = await JobPost.find()
-            .skip((page - 1) * limit)
-            .limit(Number(limit));
+        // Ensure pagination values are numbers
+        const pageNumber = Number(page);
+        const limitNumber = Number(limit);
 
-        const total = await JobPost.countDocuments();
+        // Apply filters and pagination
+        const records = await JobPost.find(filters)
+            .skip((pageNumber - 1) * limitNumber)
+            .limit(limitNumber);
 
-        if (record.length === 0) {
+        const total = await JobPost.countDocuments(filters);
+
+        if (records.length === 0) {
             return res.status(404).json({
                 message: false,
                 error: "No job posts found."
@@ -78,13 +84,14 @@ const jobFeed = async (req, res) => {
 
         res.status(200).json({
             message: true,
-            data: record,
+            data: records,
             pagination: {
-                currentPage: page,
-                totalRecords: total
-            }
+                currentPage: pageNumber,
+                totalRecords: total,
+                recordsPerPage: limitNumber,
+                totalPages: Math.ceil(total / limitNumber),
+            },
         });
-
     } catch (error) {
         res.status(500).json({
             message: false,
@@ -94,18 +101,9 @@ const jobFeed = async (req, res) => {
     }
 };
 
-const jobfilter = async (req, res) => {
-    console.log(req.query);
-    const { profile, location, workFromHome, partTime, minStipend } = req.query;
-
-
-    const filteredrecord = await JobPost.find(req.query)
-    res.status(200).json
-
-}
 
 module.exports = {
     setFreelancer,
     jobFeed,
-    jobfilter
+    // jobfilter
 }
