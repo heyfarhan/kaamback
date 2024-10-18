@@ -99,7 +99,7 @@ const jobFeed = async (req, res) => {
 
 const applyForJob = async (req, res) => {
     try {
-        console.log('Request Body:', req.body);
+        // console.log('Request Body:', req.body);
 
         const { jobId, companyId } = req.body;
 
@@ -111,7 +111,7 @@ const applyForJob = async (req, res) => {
 
         await newApplication.save();
 
-        console.log('Application Saved:', newApplication);
+        // console.log('Application Saved:', newApplication);
 
         res.status(201).json({
             message: 'Application submitted successfully',
@@ -120,7 +120,7 @@ const applyForJob = async (req, res) => {
 
     } catch (error) {
 
-        console.error('Error Saving Application:', error.message);
+        // console.error('Error Saving Application:', error.message);
 
         if (error.code === 11000) {
             res.status(400).json({

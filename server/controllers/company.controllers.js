@@ -105,6 +105,24 @@ const postJob = async (req, res) => {
     }
 };
 
+const getJobs = async (req, res) => {
+
+    try {
+        const jobs = await JobPost.find({ postedBy: req.user._id }).populate('companyDetails', 'name address');
+        res.status(200).json({
+            success: true,
+            jobs
+        });
+    } catch (error) {
+        console.error('Error fetching jobs:', error.message);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching jobs',
+            error: error.message
+        });
+    }
+};
+
 const getApplications = async (req, res) => {
     try {
 
@@ -126,10 +144,71 @@ const getApplications = async (req, res) => {
     }
 };
 
+const updateApplicationStatus = async (req, res) => {
+    try {
+        const { applicationId, status } = req.body;
+        if (!['shortlist', 'reject'].includes(status)) {
+            return res.status(400).json({ message: 'Invalid status' });
+        }
+        const application = await Application.findById(applicationId);
+
+        if (!application) {
+            return res.status(404).json({ message: 'Application not found' });
+        }
+
+        if (application.companyId.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'You are not authorized to update this application' });
+        }
+
+        application.status = status;
+
+        await application.save();
+
+        return res.status(200).json({
+            message: `Application has been ${status}`,
+            application: application
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server error', error });
+    }
+};
+
+const updateCompanyDetails = async (req, res) => {
+    try {
+        const id = req.params.id; //comapnyDetailsId
+
+        if (!req.body) {
+            return res.status(400).json({
+                message: "Data Not Received properly",
+            });
+        }
+        if (req.file) {
+            req.body.logo = req.file.filename;
+        }
+        const updatedData = await Companydetail.findByIdAndUpdate(id, req.body, { new: true });
+        if (!updatedData) {
+            return res.status(404).json({
+                message: "Company not found",
+            });
+        }
+        res.status(200).json({
+            message: "Company details updated successfully",
+            data: updatedData,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+};
 
 
 module.exports = {
     setCompany,
     postJob,
-    getApplications
+    getJobs,
+    getApplications,
+    updateApplicationStatus,
+    updateCompanyDetails
 }
