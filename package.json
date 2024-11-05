@@ -3,15 +3,14 @@
   "version": "1.0.0",
   "description": "Kaamback Project",
   "main": "index.js",
-  {
- {
+
   "scripts": {
-    "start": "node server/index.js",
+    "start": "npm install && server/index.js",
     "dev": "nodemon server/index.js",
-    "build": "cd client && npm run build"
+    "build": "cd client && npm install && npm run build"
   }
-}
-},
+
+,
   "author": "Your Name",
   "license": "ISC",
   "dependencies": {
