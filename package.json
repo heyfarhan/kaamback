@@ -1,13 +1,18 @@
 {
   "name": "kaamback",
   "version": "1.0.0",
-  "description": "",
+  "description": "Kaamback Project",
   "main": "index.js",
+  {
+ {
   "scripts": {
     "start": "node server/index.js",
-    "dev": "nodemon server/index.js"
-  },
-  "author": "",
+    "dev": "nodemon server/index.js",
+    "build": "cd client && npm run build"
+  }
+}
+},
+  "author": "Your Name",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -23,10 +28,11 @@
     "nodemon": "^3.1.4"
   },
   "engines": {
-    "node": "16.x"
+    "node": "18.x"
   },
   "keywords": [
     "node",
-    "glitch"
+    "express",
+    "mongodb"
   ]
 }
