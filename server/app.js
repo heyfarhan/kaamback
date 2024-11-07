@@ -15,6 +15,7 @@ const app = express()
 
 app.use(express.json())
 app.use(cookieParser())
+app.use(cors())
 
 app.use(express.static(path.resolve(path.dirname(__dirname) + '/public')));
 app.use(express.static(path.resolve(path.dirname(__dirname) + '/client/dist')));
